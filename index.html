@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>GRUPO SID by Traxión - Mantenimiento de Unidades</title>
     <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
     <style>
         /* Estilos rápidos para el chat */
@@ -29,7 +30,6 @@
 
     <section class="apply-section-textarea"> 
         <form id="apply">   
-            <label>Fecha de Inspección: <input type="date" name="fecha" required></label><br>
             <label>Nombre Completo: <input name="name" required> </label><br>
             <label>Numero de Unidad o equipo de arrastre: <input name="unidad"></label><br>
             <label>Base original de Trabajo: <input name="base"></label><br>    
@@ -58,11 +58,13 @@
                     <option value="Tenia entrega lista">Tenia entrega lista</option>
                 </select></label><br>
             </div>
-            <label>Subir Evidencia: <input type="file" name="evidencia" id="evidencia" accept=".jpg, .png, .pdf" multiple> </label><br>
-            <label>Descripción detallada de la falla:<br><textarea name="comment"></textarea></label><br> 
+            <label>Descripción detallada de la falla o mantenimiento requerido.:<br><textarea name="comment"></textarea></label><br>> 
             <button type="submit" class="button-submit">Enviar</button>
         </form>
         <div id="msg" aria-live="polite"></div>
+        <div id="msgPreventivo" class="mensaje-preventivo" style="display: none;">
+            <p>¡Buen trabajo! Reportar a tiempo el mantenimiento preventivo ayuda a evitar fallas y cuida nuestras unidades.</p>
+        </div>
     </section>
 
     <button id="chat-toggle" onclick="toggleChat()">💬</button>
@@ -80,46 +82,40 @@
     <script>
         // Lógica de visibilidad de campos
         document.getElementById('tipoMantenimiento').addEventListener('change', function() {
-            document.getElementById('estadoUnidadDiv').style.display = (this.value === 'Emergente') ? 'block' : 'none';
-            document.getElementById('estadoEntregaDiv').style.display = (this.value === 'Correctivo' || this.value === 'Emergente') ? 'block' : 'none';
+            const estadoDiv = document.getElementById('estadoUnidadDiv');
+            const entregaDiv = document.getElementById('estadoEntregaDiv');
+            
+            if (this.value === 'Emergente') {
+                estadoDiv.style.display = 'block';
+            } else {
+                estadoDiv.style.display = 'none';
+            }
+            
+            if (this.value === 'Correctivo' || this.value === 'Emergente') {
+                entregaDiv.style.display = 'block';
+            } else {
+                entregaDiv.style.display = 'none';
+            }
         });
 
-        // Lógica del Chatbot Prototipo (Sin API)
-        const chatContainer = document.getElementById('chat-container');
-        const chatBox = document.getElementById('chat-box');
-        const userInput = document.getElementById('user-input');
-
-        // Base de conocimientos local para el prototipo
-        const respuestasPrototipo = {
-            "1761": "<b>SPN 1761:</b> Nivel de Urea (DEF). Mantener >25% para evitar cristalización.",
-            "3251": "<b>SPN 3251:</b> Saturación DPF. Se recomienda programar regeneración al llegar al 60%.",
-            "102": "<b>SPN 102:</b> Presión de Turbo. Reportar silbidos de inmediato para evitar daños mayores.",
-            "urea": "Recuerda que si el nivel de urea baja del 10%, la unidad perderá potencia automáticamente.",
-            "llantas": "Revisar que el dibujo sea > 3mm y que no haya objetos atrapados en el eje dual.",
-            "aceite": "Verificar nivel con motor frío. No sobrepasar el máximo para evitar daños en sellos.",
-            "frenos": "No mover la unidad si el manómetro de aire indica menos de 90 PSI."
-        };
-
-        function toggleChat() {
-            chatContainer.style.display = (chatContainer.style.display === 'none' || chatContainer.style.display === '') ? 'flex' : 'none';
-        }
-
-        function enviarMensaje() {
-            const texto = userInput.value.trim().toLowerCase();
-            if (!texto) return;
-
-            // Mostrar mensaje del usuario
-            chatBox.innerHTML += `<div class="msg-user"><b>Tú:</b> ${userInput.value}</div>`;
-            userInput.value = '';
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            // Buscar respuesta local
-            let respuestaIA = "Lo siento, soy un prototipo y aún no reconozco esa duda. Prueba con: 1761, urea o llantas.";
+        document.getElementById('apply').addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            for (let clave in respuestasPrototipo) {
-                if (texto.includes(clave)) {
-                    respuestaIA = respuestasPrototipo[clave];
-                    break;
+            const formData = new FormData(this);
+            const datos = Object.fromEntries(formData);
+            
+            fetch('/guardar-datos', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(datos)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('msg').textContent = '✓ Datos guardados correctamente';
+                    this.reset();
+                } else {
+                    document.getElementById('msg').textContent = '✗ Error: ' + data.message;
                 }
             }
 
@@ -132,5 +128,7 @@
 
         userInput.addEventListener("keypress", (e) => { if (e.key === "Enter") enviarMensaje(); });
     </script>
+    <script src="KPI.js"></script>
+    <script src="tabs.js"></script>
 </body>
 </html>
