@@ -6,6 +6,10 @@ const dataEntregasDiaria = { asignadas: 20, completadas: 15, pendientes: 5 };
 const dataEntregasMensual = { asignadas: 100, completadas: 80, pendientes: 20 };
 const dataEntregasAnual = { asignadas: 400, completadas: 350, pendientes: 50 };
 
+const dataKilometrosDiaria = 150;
+const dataKilometrosMensual = 4500;
+const dataKilometrosAnual = 55000;
+
 let chart;
 let chartEntregas;
 
@@ -98,4 +102,12 @@ window.updateEntregasChart = function(period) {
     else data = dataEntregasAnual;
     chartEntregas.data.datasets[0].data = [data.asignadas, data.completadas, data.pendientes];
     chartEntregas.update();
+};
+
+window.updateKilometros = function(period) {
+    let km;
+    if (period === 'Diaria') km = dataKilometrosDiaria;
+    else if (period === 'Mensual') km = dataKilometrosMensual;
+    else km = dataKilometrosAnual;
+    document.getElementById('kilometros-display').textContent = km + ' Km';
 };

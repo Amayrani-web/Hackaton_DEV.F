@@ -204,9 +204,15 @@ form#apply input, form#apply textarea, form#apply select {
 }
 
 .quad-title {
-    font-size: 12px;
+    font-size: 24px;
     margin-bottom: 5px;
     color: white;
+}
+
+.kpi-display {
+    color: black;
+    font-size: 60px;
+    font-weight: bold;
 }
 
 .quadrant canvas {

@@ -11,6 +11,14 @@ document.addEventListener('DOMContentLoaded', function() {
             if (window.updateEntregasChart) {
                 window.updateEntregasChart(period);
             }
+            if (window.updateKilometros) {
+                window.updateKilometros(period);
+            }
         });
     });
 });
+
+// Initialize displays
+if (window.updateKilometros) {
+    window.updateKilometros('Diaria');
+}
