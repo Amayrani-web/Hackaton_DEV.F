@@ -29,7 +29,8 @@
     </div>
 
     <section class="apply-section-textarea"> 
-        <form id="apply">   
+        <form id="apply">
+            <label>Fecha de Inspección: <input type="date" name="fecha" required></label><br>  
             <label>Nombre Completo: <input name="name" required> </label><br>
             <label>Numero de Unidad o equipo de arrastre: <input name="unidad"></label><br>
             <label>Base original de Trabajo: <input name="base"></label><br>    
@@ -58,6 +59,7 @@
                     <option value="Tenia entrega lista">Tenia entrega lista</option>
                 </select></label><br>
             </div>
+            <label>Subir Evidencia (Fotos/PDF): <input type="file" name="evidencia" id="evidencia" accept=".jpg, .png, .pdf" multiple> </label><br>
             <label>Descripción detallada de la falla:<br><textarea name="comment"></textarea></label><br>
             <button type="submit" class="button-submit">Enviar</button>
         </form>
