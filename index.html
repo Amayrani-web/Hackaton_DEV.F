@@ -18,27 +18,29 @@
 
     <section class="apply-section-textarea"> 
         <div class="left-section">
+            <h2>Formulario de Reporte de Mantenimiento</h2>
+            <div id="notification" class="notification"></div>
             <form id="apply">   
                 <div class="field-group">
-                    <label>Nombre Completo:</label>
+                    <label>Nombre Completo</label>
                     <input name="name" required placeholder="Ej: Juan Pérez">
                 </div>
                 <div class="field-group">
-                    <label>Numero de Unidad o equipo de arrastre:</label>
+                    <label>Numero de Unidad o equipo de arrastre</label>
                     <input name="unidad" placeholder="Ej: 123">
                 </div>
                 <div class="field-group">
-                    <label>Base original de Trabajo:</label>
+                    <label>Base original de Trabajo</label>
                     <input name="base" placeholder="Ej: Ciudad de México">
                 </div>
                 <div class="field-group">
-                    <label>Ubicación actual de la unidad:</label>
+                    <label>Ubicación actual de la unidad</label>
                     <input name="position" placeholder="Ej: Bodega Norte">
                 </div>
                 <div class="field-group">
-                    <label>Tipo de Mantenimiento:</label>
+                    <label>Tipo de Mantenimiento</label>
                     <select id="tipoMantenimiento" name="tipoMantenimiento" required>
-                        <option value="">-- Selecciona una opción --</option>
+                        <option value="" disabled selected>-- Selecciona una opción --</option>
                         <option value="Preventivo">Preventivo</option>
                         <option value="Correctivo">Correctivo</option>
                         <option value="Emergente">Emergente</option>
@@ -46,9 +48,9 @@
                 </div>
                 <div id="estadoUnidadDiv" style="display: none;">
                     <div class="field-group">
-                        <label>Estado de la Unidad:</label>
+                        <label>Estado de la Unidad</label>
                         <select name="estadoUnidad">
-                            <option value="">-- Selecciona una opción --</option>
+                            <option value="" disabled selected>-- Selecciona una opción --</option>
                             <option value="La unidad puede operar">La unidad puede operar</option>
                             <option value="Operar con restricciones">Operar con restricciones</option>
                             <option value="No puede operar">No puede operar</option>
@@ -57,9 +59,9 @@
                 </div>
                 <div id="estadoEntregaDiv" style="display: none;">
                     <div class="field-group">
-                        <label>Estado de Entrega:</label>
+                        <label>Estado de Entrega de pedido</label>
                         <select name="estadoEntrega">
-                            <option value="">-- Selecciona una opción --</option>
+                            <option value="" disabled selected>-- Selecciona una opción --</option>
                             <option value="Estaba por entregar">Estaba por entregar</option>
                             <option value="Tenia entrega lista">Tenia entrega lista</option>
                         </select>
@@ -79,6 +81,12 @@
             </div>
         </div>
         <div class="right-section">
+            <div class="tabs">
+                <button class="tab active" data-period="Diaria">D</button>
+                <button class="tab" data-period="Mensual">M</button>
+                <button class="tab" data-period="Anual">A</button>
+            </div>
+            <h2>Tu actividad Diaria</h2>
             <p>Espacio para gráficas y KPIs</p>
             <!-- Aquí se integrarán las gráficas y KPIs -->
         </div>
@@ -117,7 +125,12 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    document.getElementById('msg').textContent = '✓ Datos guardados correctamente';
+                    const notif = document.getElementById('notification');
+                    notif.textContent = 'El formulario se ha enviado a Mantenimiento con éxito';
+                    notif.classList.add('show');
+                    setTimeout(() => {
+                        notif.innerHTML = '<div class="check-circle">✓</div>';
+                    }, 2000);
                     this.reset();
                 } else {
                     document.getElementById('msg').textContent = '✗ Error: ' + data.message;
@@ -125,8 +138,14 @@
             })
             .catch(error => {
                 document.getElementById('msg').textContent = '✗ Error al enviar los datos';
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                const period = this.dataset.period;
+                document.querySelector('.right-section h2').textContent = 'Tu actividad ' + period;
+            });
+        }); 
             });
         });
     </script>
-</body>
-</html>
