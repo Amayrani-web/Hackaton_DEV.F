@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>GRUPO SID by Traxión - Mantenimiento de Unidades</title>
     <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="imagen-centrada">
@@ -88,10 +89,10 @@
             </div>
             <h2>Tu actividad Diaria</h2>
             <div class="quadrants">
-                <div class="quadrant">Cuadrante 1</div>
-                <div class="quadrant">Cuadrante 2</div>
-                <div class="quadrant">Cuadrante 3</div>
-                <div class="quadrant">Cuadrante 4</div>
+                <div class="quadrant"><canvas id="reportes-chart"></canvas></div>
+                <div class="quadrant">Entregas de pedido</div>
+                <div class="quadrant">Kilometros recorridos</div>
+                <div class="quadrant">Unidad de Transporte</div>
             </div>
         </div>
     </section>
@@ -145,6 +146,7 @@
             });
         });
     </script>
+    <script src="KPI.js"></script>
     <script src="tabs.js"></script>
 </body>
 </html>

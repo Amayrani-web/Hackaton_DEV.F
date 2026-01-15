@@ -191,7 +191,7 @@ form#apply input, form#apply textarea, form#apply select {
 }
 
 .quadrant {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.3);
     border-radius: 5px;
     display: flex;
     align-items: center;
@@ -200,6 +200,11 @@ form#apply input, form#apply textarea, form#apply select {
     font-size: 14px;
     text-align: center;
     padding: 10px;
+}
+
+.quadrant canvas {
+    width: 100% !important;
+    height: 100% !important;
 }
 
 @media (max-width: 768px) {

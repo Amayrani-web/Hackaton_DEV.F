@@ -5,6 +5,9 @@ document.addEventListener('DOMContentLoaded', function() {
             this.classList.add('active');
             const period = this.dataset.period;
             document.querySelector('.right-section h2').textContent = 'Tu actividad ' + period;
+            if (window.updateChart) {
+                window.updateChart(period);
+            }
         });
     });
 });
