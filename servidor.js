@@ -111,5 +111,5 @@ app.post('/guardar-datos', (req, res) => {
     }
 });
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Asistente Traxión 2026 (Full) listo en puerto ${PORT}`));
