@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>GRUPO SID by Traxión - Mantenimiento de Unidades</title>
     <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="imagen-centrada">
@@ -17,41 +18,102 @@
     </div>
 
     <section class="apply-section-textarea"> 
-        <form id="apply">   
-            <label>Nombre Completo: <input name="name" required> </label><br>
-            <label>Numero de Unidad o equipo de arrastre: <input name="unidad"></label><br>
-            <label>Base original de Trabajo: <input name="base"></label><br>    
-            <label>Ubicación actual de la unidad.: <input name="position"></label><br>
-            <p>Tipo de Mantenimiento:</p>
-            <label><select id="tipoMantenimiento" name="tipoMantenimiento" required>
-                <option value="">-- Selecciona una opción --</option>
-                <option value="Preventivo">Preventivo</option>
-                <option value="Correctivo">Correctivo</option>
-                <option value="Emergente">Emergente</option>
-            </select></label><br>
-            <div id="estadoUnidadDiv" style="display: none;">
-                <p>Estado de la Unidad:</p>
-                <label><select name="estadoUnidad">
-                    <option value="">-- Selecciona una opción --</option>
-                    <option value="La unidad puede operar">La unidad puede operar</option>
-                    <option value="Operar con restricciones">Operar con restricciones</option>
-                    <option value="No puede operar">No puede operar</option>
-                </select></label><br>
+        <div class="left-section">
+            <h2>Formulario de Reporte de Mantenimiento</h2>
+            <div id="notification" class="notification"></div>
+            <form id="apply">   
+                <div class="field-group">
+                    <label>Nombre Completo</label>
+                    <input name="name" required placeholder="Ej: Juan Pérez">
+                </div>
+                <div class="field-group">
+                    <label>Numero de Unidad o equipo de arrastre</label>
+                    <input name="unidad" placeholder="Ej: 123">
+                </div>
+                <div class="field-group">
+                    <label>Base original de Trabajo</label>
+                    <input name="base" placeholder="Ej: Ciudad de México">
+                </div>
+                <div class="field-group">
+                    <label>Ubicación actual de la unidad</label>
+                    <input name="position" placeholder="Ej: Bodega Norte">
+                </div>
+                <div class="field-group">
+                    <label>Tipo de Mantenimiento</label>
+                    <select id="tipoMantenimiento" name="tipoMantenimiento" required>
+                        <option value="" disabled selected>-- Selecciona una opción --</option>
+                        <option value="Preventivo">Preventivo</option>
+                        <option value="Correctivo">Correctivo</option>
+                        <option value="Emergente">Emergente</option>
+                    </select>
+                </div>
+                <div id="estadoUnidadDiv" style="display: none;">
+                    <div class="field-group">
+                        <label>Estado de la Unidad</label>
+                        <select name="estadoUnidad">
+                            <option value="" disabled selected>-- Selecciona una opción --</option>
+                            <option value="La unidad puede operar">La unidad puede operar</option>
+                            <option value="Operar con restricciones">Operar con restricciones</option>
+                            <option value="No puede operar">No puede operar</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="estadoEntregaDiv" style="display: none;">
+                    <div class="field-group">
+                        <label>Estado de Entrega de pedido</label>
+                        <select name="estadoEntrega">
+                            <option value="" disabled selected>-- Selecciona una opción --</option>
+                            <option value="Estaba por entregar">Estaba por entregar</option>
+                            <option value="Tenia entrega lista">Tenia entrega lista</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field-group">
+                    <label>Descripción detallada de la falla o mantenimiento requerido</label>
+                    <textarea name="comment" placeholder="Describe la falla o mantenimiento"></textarea>
+                </div>
+                <div class="button-container">
+                    <button type="submit" class="button-submit">Enviar</button>
+                </div>
+            </form>
+            <div id="msg" aria-live="polite"></div>
+            <div id="msgPreventivo" class="mensaje-preventivo" style="display: none;">
+                <p>¡Buen trabajo! Reportar a tiempo el mantenimiento preventivo ayuda a evitar fallas y cuida nuestras unidades.</p>
             </div>
-            <div id="estadoEntregaDiv" style="display: none;">
-                <p>Estado de Entrega:</p>
-                <label><select name="estadoEntrega">
-                    <option value="">-- Selecciona una opción --</option>
-                    <option value="Estaba por entregar">Estaba por entregar</option>
-                    <option value="Tenia entrega lista">Tenia entrega lista</option>
-                </select></label><br>
+        </div>
+        <div class="right-section">
+            <div class="tabs">
+                <button class="tab active" data-period="Diaria">D</button>
+                <button class="tab" data-period="Mensual">M</button>
+                <button class="tab" data-period="Anual">A</button>
             </div>
-            <label>Descripción detallada de la falla o mantenimiento requerido.:<br><textarea name="comment"></textarea></label><br>> 
-            <button type="submit" class="button-submit">Enviar</button>
-        </form>
-        <div id="msg" aria-live="polite"></div>
-        <div id="msgPreventivo" class="mensaje-preventivo" style="display: none;">
-            <p>¡Buen trabajo! Reportar a tiempo el mantenimiento preventivo ayuda a evitar fallas y cuida nuestras unidades.</p>
+            <h2>Tu actividad Diaria</h2>
+            <div class="quadrants">
+                <div class="quadrant">
+                 <div class="quad-title">Reportes de mantenimiento</div><canvas id="reportes-chart"></canvas>
+                </div>
+                <div class="quadrant"><div class="quad-title">Entregas de pedido</div><canvas id="entregas-chart"></canvas></div>
+                <div class="quadrant"><div class="quad-title">Kilometros recorridos</div><div id="kilometros-display" class="kpi-display">0 Km</div></div>
+                <div class="quadrant">
+                    <div class="quad-title">Unidad de Transporte</div>
+                    <div class="subsections">
+                        <div class="subsection upper">
+                            <div class="label">Modelo y Unidad</div>
+                            <div class="value" id="modelo-unidad">Modelo: XYZ - Unidad: 12345</div>
+                        </div>
+                        <div class="lower">
+                            <div class="subsection left">
+                                <div class="label">Consumo de Gasolina</div>
+                                <div class="value" id="consumo-display">Consumo: 0 L</div>
+                            </div>
+                            <div class="subsection right">
+                                <div class="label">Servicios Técnicos Recibidos</div>
+                                <div class="value" id="servicios-display">Servicios: 0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -88,7 +150,12 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    document.getElementById('msg').textContent = '✓ Datos guardados correctamente';
+                    const notif = document.getElementById('notification');
+                    notif.textContent = 'El formulario se ha enviado a Mantenimiento con éxito';
+                    notif.classList.add('show');
+                    setTimeout(() => {
+                        notif.innerHTML = '<div class="check-circle">✓</div>';
+                    }, 2000);
                     this.reset();
                 } else {
                     document.getElementById('msg').textContent = '✗ Error: ' + data.message;
@@ -99,5 +166,7 @@
             });
         });
     </script>
+    <script src="KPI.js"></script>
+    <script src="tabs.js"></script>
 </body>
 </html>
