@@ -7,118 +7,80 @@
     <link rel="stylesheet" href="styles.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+    <style>
+        /* Estilos rápidos para el chat */
+        #chat-toggle { position: fixed; bottom: 20px; right: 20px; background: #444; color: white; border: none; border-radius: 50%; width: 60px; height: 60px; cursor: pointer; font-size: 24px; z-index: 1001; }
+        .chat-window { position: fixed; bottom: 90px; right: 20px; width: 320px; height: 450px; background: white; border: 1px solid #ccc; border-radius: 12px; display: none; flex-direction: column; box-shadow: 0 5px 20px rgba(0,0,0,0.2); z-index: 1000; font-family: sans-serif; }
+        .chat-header { background: #666; color: white; padding: 15px; border-radius: 12px 12px 0 0; font-weight: bold; }
+        .chat-box { flex: 1; overflow-y: auto; padding: 15px; background: #f9f9f9; }
+        .chat-input-area { display: flex; padding: 10px; gap: 5px; border-top: 1px solid #eee; }
+        .chat-input-area input { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 5px; }
+        .chat-input-area button { background: #444; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+        .msg-user { background: #e3f2fd; padding: 8px; border-radius: 8px; margin-bottom: 10px; text-align: right; }
+        .msg-ai { background: #eee; padding: 8px; border-radius: 8px; margin-bottom: 10px; }
+    </style>
 <body>
     <div class="imagen-centrada">
         <img src="https://traxion.global/hubfs/traxion-global-sitio-mar24/Nuevos%20Logos%20REDIMENSI%C3%93N/Logos%20TRAXION%20-%20No%20tilde/SVG-500x150_17-TRAXION%20ESP%20GRIS.svg" alt="Logo Traxión" width="250" height="75">
     </div>
     <div class="color-y-fondo">Cuidar nuestras unidades es parte de nuestro trabajo.</div>
-    <h1></h1>
     <div class="seccion-imagen-fondo">
-        <p>Cada colaborador es responsable de reportar, revisar y mantener en buen estado la unidad asignada. El mantenimiento adecuado evita riesgos, retrasos y una operación segura.</p>
+        <p>Cada colaborador es responsable de reportar, revisar y mantener en buen estado la unidad asignada.</p>
     </div>
 
     <section class="apply-section-textarea"> 
-        <div class="left-section">
-            <h2>Formulario de Reporte de Mantenimiento</h2>
-            <div id="notification" class="notification"></div>
-            <form id="apply">   
-                <div class="field-group">
-                    <label>Nombre Completo</label>
-                    <input name="name" required placeholder="Ej: Juan Pérez">
-                </div>
-                <div class="field-group">
-                    <label>Numero de Unidad o equipo de arrastre</label>
-                    <input name="unidad" placeholder="Ej: 123">
-                </div>
-                <div class="field-group">
-                    <label>Base original de Trabajo</label>
-                    <input name="base" placeholder="Ej: Ciudad de México">
-                </div>
-                <div class="field-group">
-                    <label>Ubicación actual de la unidad</label>
-                    <input name="position" placeholder="Ej: Bodega Norte">
-                </div>
-                <div class="field-group">
-                    <label>Tipo de Mantenimiento</label>
-                    <select id="tipoMantenimiento" name="tipoMantenimiento" required>
-                        <option value="" disabled selected>-- Selecciona una opción --</option>
-                        <option value="Preventivo">Preventivo</option>
-                        <option value="Correctivo">Correctivo</option>
-                        <option value="Emergente">Emergente</option>
-                    </select>
-                </div>
-                <div id="estadoUnidadDiv" style="display: none;">
-                    <div class="field-group">
-                        <label>Estado de la Unidad</label>
-                        <select name="estadoUnidad">
-                            <option value="" disabled selected>-- Selecciona una opción --</option>
-                            <option value="La unidad puede operar">La unidad puede operar</option>
-                            <option value="Operar con restricciones">Operar con restricciones</option>
-                            <option value="No puede operar">No puede operar</option>
-                        </select>
-                    </div>
-                </div>
-                <div id="estadoEntregaDiv" style="display: none;">
-                    <div class="field-group">
-                        <label>Estado de Entrega de pedido</label>
-                        <select name="estadoEntrega">
-                            <option value="" disabled selected>-- Selecciona una opción --</option>
-                            <option value="Estaba por entregar">Estaba por entregar</option>
-                            <option value="Tenia entrega lista">Tenia entrega lista</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="field-group">
-                    <label>Descripción detallada de la falla o mantenimiento requerido</label>
-                    <textarea name="comment" placeholder="Describe la falla o mantenimiento"></textarea>
-                </div>
-                <div class="button-container">
-                    <button type="submit" class="button-submit">Enviar</button>
-                </div>
-            </form>
-            <div id="msg" aria-live="polite"></div>
-            <div id="msgPreventivo" class="mensaje-preventivo" style="display: none;">
-                <p>¡Buen trabajo! Reportar a tiempo el mantenimiento preventivo ayuda a evitar fallas y cuida nuestras unidades.</p>
+        <form id="apply">   
+            <label>Nombre Completo: <input name="name" required> </label><br>
+            <label>Numero de Unidad o equipo de arrastre: <input name="unidad"></label><br>
+            <label>Base original de Trabajo: <input name="base"></label><br>    
+            <label>Ubicación actual de la unidad.: <input name="position"></label><br>
+            <p>Tipo de Mantenimiento:</p>
+            <label><select id="tipoMantenimiento" name="tipoMantenimiento" required>
+                <option value="">-- Selecciona una opción --</option>
+                <option value="Preventivo">Preventivo</option>
+                <option value="Correctivo">Correctivo</option>
+                <option value="Emergente">Emergente</option>
+            </select></label><br>
+            <div id="estadoUnidadDiv" style="display: none;">
+                <p>Estado de la Unidad:</p>
+                <label><select name="estadoUnidad">
+                    <option value="">-- Selecciona una opción --</option>
+                    <option value="La unidad puede operar">La unidad puede operar</option>
+                    <option value="Operar con restricciones">Operar con restricciones</option>
+                    <option value="No puede operar">No puede operar</option>
+                </select></label><br>
             </div>
-        </div>
-        <div class="right-section">
-            <div class="tabs">
-                <button class="tab active" data-period="Diaria">D</button>
-                <button class="tab" data-period="Mensual">M</button>
-                <button class="tab" data-period="Anual">A</button>
+            <div id="estadoEntregaDiv" style="display: none;">
+                <p>Estado de Entrega:</p>
+                <label><select name="estadoEntrega">
+                    <option value="">-- Selecciona una opción --</option>
+                    <option value="Estaba por entregar">Estaba por entregar</option>
+                    <option value="Tenia entrega lista">Tenia entrega lista</option>
+                </select></label><br>
             </div>
-            <h2>Tu actividad Diaria</h2>
-            <div class="quadrants">
-                <div class="quadrant">
-                 <div class="quad-title">Reportes de mantenimiento</div><canvas id="reportes-chart"></canvas>
-                </div>
-                <div class="quadrant"><div class="quad-title">Entregas de pedido</div><canvas id="entregas-chart"></canvas></div>
-                <div class="quadrant"><div class="quad-title">Kilometros recorridos</div><div id="kilometros-display" class="kpi-display">0 Km</div></div>
-                <div class="quadrant">
-                    <div class="quad-title">Unidad de Transporte</div>
-                    <div class="subsections">
-                        <div class="subsection upper">
-                            <div class="label">Modelo y Unidad</div>
-                            <div class="value" id="modelo-unidad">Modelo: XYZ - Unidad: 12345</div>
-                        </div>
-                        <div class="lower">
-                            <div class="subsection left">
-                                <div class="label">Consumo de Gasolina</div>
-                                <div class="value" id="consumo-display">Consumo: 0 L</div>
-                            </div>
-                            <div class="subsection right">
-                                <div class="label">Servicios Técnicos Recibidos</div>
-                                <div class="value" id="servicios-display">Servicios: 0</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <label>Descripción detallada de la falla o mantenimiento requerido.:<br><textarea name="comment"></textarea></label><br>> 
+            <button type="submit" class="button-submit">Enviar</button>
+        </form>
+        <div id="msg" aria-live="polite"></div>
+        <div id="msgPreventivo" class="mensaje-preventivo" style="display: none;">
+            <p>¡Buen trabajo! Reportar a tiempo el mantenimiento preventivo ayuda a evitar fallas y cuida nuestras unidades.</p>
         </div>
     </section>
 
+    <button id="chat-toggle" onclick="toggleChat()">💬</button>
+    <div id="chat-container" class="chat-window">
+        <div class="chat-header">Asistente Traxión (Prototipo)</div>
+        <div id="chat-box" class="chat-box">
+            <div class="msg-ai">Hola, soy el asistente técnico. Escribe un código SPN (ej. 1761) o una duda (ej. urea, llantas) para ayudarte.</div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="user-input" placeholder="Escribe tu duda...">
+            <button onclick="enviarMensaje()">Enviar</button>
+        </div>
+    </div>
+
     <script>
-        // Mostrar/Ocultar recuadro de estado de unidad y estado de entrega
+        // Lógica de visibilidad de campos
         document.getElementById('tipoMantenimiento').addEventListener('change', function() {
             const estadoDiv = document.getElementById('estadoUnidadDiv');
             const entregaDiv = document.getElementById('estadoEntregaDiv');
@@ -150,21 +112,21 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    const notif = document.getElementById('notification');
-                    notif.textContent = 'El formulario se ha enviado a Mantenimiento con éxito';
-                    notif.classList.add('show');
-                    setTimeout(() => {
-                        notif.innerHTML = '<div class="check-circle">✓</div>';
-                    }, 2000);
+                    document.getElementById('msg').textContent = '✓ Datos guardados correctamente';
                     this.reset();
                 } else {
                     document.getElementById('msg').textContent = '✗ Error: ' + data.message;
                 }
-            })
-            .catch(error => {
-                document.getElementById('msg').textContent = '✗ Error al enviar los datos';
-            });
-        });
+            }
+
+            // Simular respuesta después de 500ms
+            setTimeout(() => {
+                chatBox.innerHTML += `<div class="msg-ai"><b>Asistente:</b> ${respuestaIA}</div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 500);
+        }
+
+        userInput.addEventListener("keypress", (e) => { if (e.key === "Enter") enviarMensaje(); });
     </script>
     <script src="KPI.js"></script>
     <script src="tabs.js"></script>
