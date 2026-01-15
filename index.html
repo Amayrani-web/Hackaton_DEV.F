@@ -87,8 +87,12 @@
                 <button class="tab" data-period="Anual">A</button>
             </div>
             <h2>Tu actividad Diaria</h2>
-            <p>Espacio para gráficas y KPIs</p>
-            <!-- Aquí se integrarán las gráficas y KPIs -->
+            <div class="quadrants">
+                <div class="quadrant">Cuadrante 1</div>
+                <div class="quadrant">Cuadrante 2</div>
+                <div class="quadrant">Cuadrante 3</div>
+                <div class="quadrant">Cuadrante 4</div>
+            </div>
         </div>
     </section>
 
@@ -138,14 +142,9 @@
             })
             .catch(error => {
                 document.getElementById('msg').textContent = '✗ Error al enviar los datos';
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-                const period = this.dataset.period;
-                document.querySelector('.right-section h2').textContent = 'Tu actividad ' + period;
-            });
-        }); 
             });
         });
     </script>
+    <script src="tabs.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            const period = this.dataset.period;
+            document.querySelector('.right-section h2').textContent = 'Tu actividad ' + period;
+        });
+    });
+});
