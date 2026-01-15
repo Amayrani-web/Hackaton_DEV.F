@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (window.updateChart) {
                 window.updateChart(period);
             }
+            if (window.updateEntregasChart) {
+                window.updateEntregasChart(period);
+            }
         });
     });
 });
