@@ -47,6 +47,43 @@ form#apply input, form#apply textarea, form#apply select {
     box-sizing: border-box;
 }
 
+.field-group {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.field-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: white;
+}
+
+.field-group input,
+.field-group select,
+.field-group textarea {
+    display: block;
+    margin: 0 auto;
+    max-width: 320px;
+    width: 100%;
+    padding: 6px;
+    box-sizing: border-box;
+}
+
+.field-group ::placeholder {
+    opacity: 0.2;
+    color: inherit;
+}
+
+.button-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#msg, #msgPreventivo {
+    text-align: center;
+}
+
 .apply-section-textarea {
     padding: 20px;
     border-radius: 5px;
@@ -55,6 +92,35 @@ form#apply input, form#apply textarea, form#apply select {
     width: 100%;
     box-sizing: border-box;
     margin: 20px 0;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.left-section, .right-section {
+    flex: 1;
+    min-width: 0; /* Prevents flex items from shrinking below content size */
+}
+
+.right-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    padding: 20px;
+}
+
+.right-section p {
+    color: white;
+    font-size: 18px;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .apply-section-textarea {
+        flex-direction: column;
+    }
 }
 
 .button-submit {
