@@ -6,7 +6,6 @@
     <title>GRUPO SID by Traxión - Mantenimiento de Unidades</title>
     <link rel="stylesheet" href="styles.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
     <style>
         /* Estilos rápidos para el chat */
         #chat-toggle { position: fixed; bottom: 20px; right: 20px; background: #444; color: white; border: none; border-radius: 50%; width: 60px; height: 60px; cursor: pointer; font-size: 24px; z-index: 1001; }
@@ -19,6 +18,7 @@
         .msg-user { background: #e3f2fd; padding: 8px; border-radius: 8px; margin-bottom: 10px; text-align: right; }
         .msg-ai { background: #eee; padding: 8px; border-radius: 8px; margin-bottom: 10px; }
     </style>
+</head>
 <body>
     <div class="imagen-centrada">
         <img src="https://traxion.global/hubfs/traxion-global-sitio-mar24/Nuevos%20Logos%20REDIMENSI%C3%93N/Logos%20TRAXION%20-%20No%20tilde/SVG-500x150_17-TRAXION%20ESP%20GRIS.svg" alt="Logo Traxión" width="250" height="75">
@@ -58,13 +58,10 @@
                     <option value="Tenia entrega lista">Tenia entrega lista</option>
                 </select></label><br>
             </div>
-            <label>Descripción detallada de la falla o mantenimiento requerido.:<br><textarea name="comment"></textarea></label><br>> 
+            <label>Descripción detallada de la falla:<br><textarea name="comment"></textarea></label><br>
             <button type="submit" class="button-submit">Enviar</button>
         </form>
         <div id="msg" aria-live="polite"></div>
-        <div id="msgPreventivo" class="mensaje-preventivo" style="display: none;">
-            <p>¡Buen trabajo! Reportar a tiempo el mantenimiento preventivo ayuda a evitar fallas y cuida nuestras unidades.</p>
-        </div>
     </section>
 
     <button id="chat-toggle" onclick="toggleChat()">💬</button>
@@ -80,46 +77,62 @@
     </div>
 
     <script>
-        // Lógica de visibilidad de campos
+        // --- BASE DE CONOCIMIENTO (Sin Cites) ---
+        const baseConocimiento = {
+            especificaciones: {
+                "urea": "Nivel de DEF (Urea): Mantener >25% para evitar cristalización.",
+                "dpf": "Saturación DPF (SPN 3251): Programar regeneración si llega al 60%.",
+                "bateria": "Estado de Baterías (SPN 168): Si es <12.4V en reposo, cargar baterías.",
+                "direccion": "Dirección: Máximo 30° de juego en volante (Norma NOM-068).",
+                "frenos": "Presión de Aire: Manómetro >90 PSI. No mover si la alarma sonora está activa.",
+                "llantas": "Llantas: Dibujo > 3mm. Rotación cada 10,000 km recomendada.",
+                "aceite": "Lubricación: No sobrepasar el nivel máximo para no dañar los sellos.",
+                "anticongelante": "Enfriamiento: Revisar mangueras por grietas o fugas."
+            },
+            codigosFalla: {
+                "spn 1761": "SPN 1761: Nivel de DEF (Urea) bajo. Mantener >25%.",
+                "spn 3251": "SPN 3251: Saturación DPF. Programar regeneración al 60%.",
+                "spn 102": "SPN 102: Presión de Boost (Turbo). Reportar silbidos extraños de inmediato.",
+                "spn 168": "SPN 168: Voltaje de Baterías <12.4V. Cargar baterías."
+            }
+        };
+
+        // Visibilidad de campos
         document.getElementById('tipoMantenimiento').addEventListener('change', function() {
-            const estadoDiv = document.getElementById('estadoUnidadDiv');
-            const entregaDiv = document.getElementById('estadoEntregaDiv');
-            
-            if (this.value === 'Emergente') {
-                estadoDiv.style.display = 'block';
-            } else {
-                estadoDiv.style.display = 'none';
-            }
-            
-            if (this.value === 'Correctivo' || this.value === 'Emergente') {
-                entregaDiv.style.display = 'block';
-            } else {
-                entregaDiv.style.display = 'none';
-            }
+            document.getElementById('estadoUnidadDiv').style.display = (this.value === 'Emergente') ? 'block' : 'none';
+            document.getElementById('estadoEntregaDiv').style.display = (this.value === 'Correctivo' || this.value === 'Emergente') ? 'block' : 'none';
         });
 
-        document.getElementById('apply').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            const datos = Object.fromEntries(formData);
-            
-            fetch('/guardar-datos', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(datos)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    document.getElementById('msg').textContent = '✓ Datos guardados correctamente';
-                    this.reset();
-                } else {
-                    document.getElementById('msg').textContent = '✗ Error: ' + data.message;
-                }
+        // Chatbot Lógica Local
+        const chatContainer = document.getElementById('chat-container');
+        const chatBox = document.getElementById('chat-box');
+        const userInput = document.getElementById('user-input');
+
+        function toggleChat() {
+            chatContainer.style.display = (chatContainer.style.display === 'none' || chatContainer.style.display === '') ? 'flex' : 'none';
+        }
+
+        function enviarMensaje() {
+            const textoOriginal = userInput.value.trim();
+            if (!textoOriginal) return;
+
+            chatBox.innerHTML += `<div class="msg-user"><b>Tú:</b> ${textoOriginal}</div>`;
+            userInput.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            const msg = textoOriginal.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            let respuestaIA = "Soy tu Asistente Traxión. ¿Necesitas apoyo con algún componente o código de falla?";
+
+            // Buscar en códigos SPN
+            const codigoEncontrado = Object.keys(baseConocimiento.codigosFalla).find(c => msg.includes(c));
+            if (codigoEncontrado) {
+                respuestaIA = baseConocimiento.codigosFalla[codigoEncontrado];
+            } else {
+                // Buscar en especificaciones generales
+                const specEncontrada = Object.keys(baseConocimiento.especificaciones).find(s => msg.includes(s));
+                if (specEncontrada) respuestaIA = baseConocimiento.especificaciones[specEncontrada];
             }
 
-            // Simular respuesta después de 500ms
             setTimeout(() => {
                 chatBox.innerHTML += `<div class="msg-ai"><b>Asistente:</b> ${respuestaIA}</div>`;
                 chatBox.scrollTop = chatBox.scrollHeight;
@@ -127,8 +140,13 @@
         }
 
         userInput.addEventListener("keypress", (e) => { if (e.key === "Enter") enviarMensaje(); });
+
+        // Manejo de formulario (Prototipo)
+        document.getElementById('apply').addEventListener('submit', function(e) {
+            e.preventDefault();
+            document.getElementById('msg').textContent = '✓ Inspección registrada (Modo Prototipo Local)';
+            this.reset();
+        });
     </script>
-    <script src="KPI.js"></script>
-    <script src="tabs.js"></script>
 </body>
 </html>
