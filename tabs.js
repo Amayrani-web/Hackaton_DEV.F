@@ -14,6 +14,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (window.updateKilometros) {
                 window.updateKilometros(period);
             }
+            if (window.updateConsumo) {
+                window.updateConsumo(period);
+            }
+            if (window.updateServicios) {
+                window.updateServicios(period);
+            }
         });
     });
 });
@@ -21,4 +27,10 @@ document.addEventListener('DOMContentLoaded', function() {
 // Initialize displays
 if (window.updateKilometros) {
     window.updateKilometros('Diaria');
+}
+if (window.updateConsumo) {
+    window.updateConsumo('Diaria');
+}
+if (window.updateServicios) {
+    window.updateServicios('Diaria');
 }

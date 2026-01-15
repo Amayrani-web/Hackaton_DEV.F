@@ -10,6 +10,14 @@ const dataKilometrosDiaria = 150;
 const dataKilometrosMensual = 4500;
 const dataKilometrosAnual = 55000;
 
+const dataConsumoDiaria = 8;
+const dataConsumoMensual = 250;
+const dataConsumoAnual = 3000;
+
+const dataServiciosDiaria = 1;
+const dataServiciosMensual = 12;
+const dataServiciosAnual = 50;
+
 let chart;
 let chartEntregas;
 
@@ -110,4 +118,20 @@ window.updateKilometros = function(period) {
     else if (period === 'Mensual') km = dataKilometrosMensual;
     else km = dataKilometrosAnual;
     document.getElementById('kilometros-display').textContent = km + ' Km';
+};
+
+window.updateConsumo = function(period) {
+    let consumo;
+    if (period === 'Diaria') consumo = dataConsumoDiaria;
+    else if (period === 'Mensual') consumo = dataConsumoMensual;
+    else consumo = dataConsumoAnual;
+    document.getElementById('consumo-display').textContent =  consumo + ' L';
+};
+
+window.updateServicios = function(period) {
+    let servicios;
+    if (period === 'Diaria') servicios = dataServiciosDiaria;
+    else if (period === 'Mensual') servicios = dataServiciosMensual;
+    else servicios = dataServiciosAnual;
+    document.getElementById('servicios-display').textContent =  servicios;
 };
