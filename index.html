@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GRUPO SID by Traxión - Mantenimiento de Unidades</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <div class="imagen-centrada">
+        <img src="https://traxion.global/hubfs/traxion-global-sitio-mar24/Nuevos%20Logos%20REDIMENSI%C3%93N/Logos%20TRAXION%20-%20No%20tilde/SVG-500x150_17-TRAXION%20ESP%20GRIS.svg" alt="Logo Traxión" width="250" height="75">
+    </div>
+    <div class="color-y-fondo">Cuidar nuestras unidades es parte de nuestro trabajo.</div>
+    <h1></h1>
+    <div class="seccion-imagen-fondo">
+        <p>Cada colaborador es responsable de reportar, revisar y mantener en buen estado la unidad asignada. El mantenimiento adecuado evita riesgos, retrasos y una operación segura.</p>
+    </div>
+
+    <section class="apply-section-textarea"> 
+        <form id="apply">   
+            <label>Nombre Completo: <input name="name" required> </label><br>
+            <label>Numero de Unidad o equipo de arrastre: <input name="unidad"></label><br>
+            <label>Base original de Trabajo: <input name="base"></label><br>    
+            <label>Ubicación actual de la unidad.: <input name="position"></label><br>
+            <p>Tipo de Mantenimiento:</p>
+            <label><select id="tipoMantenimiento" name="tipoMantenimiento" required>
+                <option value="">-- Selecciona una opción --</option>
+                <option value="Preventivo">Preventivo</option>
+                <option value="Correctivo">Correctivo</option>
+                <option value="Emergente">Emergente</option>
+            </select></label><br>
+            <div id="estadoUnidadDiv" style="display: none;">
+                <p>Estado de la Unidad:</p>
+                <label><select name="estadoUnidad">
+                    <option value="">-- Selecciona una opción --</option>
+                    <option value="La unidad puede operar">La unidad puede operar</option>
+                    <option value="Operar con restricciones">Operar con restricciones</option>
+                    <option value="No puede operar">No puede operar</option>
+                </select></label><br>
+            </div>
+            <div id="estadoEntregaDiv" style="display: none;">
+                <p>Estado de Entrega:</p>
+                <label><select name="estadoEntrega">
+                    <option value="">-- Selecciona una opción --</option>
+                    <option value="Estaba por entregar">Estaba por entregar</option>
+                    <option value="Tenia entrega lista">Tenia entrega lista</option>
+                </select></label><br>
+            </div>
+            <label>Descripción detallada de la falla o mantenimiento requerido.:<br><textarea name="comment"></textarea></label><br>> 
+            <button type="submit" class="button-submit">Enviar</button>
+        </form>
+        <div id="msg" aria-live="polite"></div>
+        <div id="msgPreventivo" class="mensaje-preventivo" style="display: none;">
+            <p>¡Buen trabajo! Reportar a tiempo el mantenimiento preventivo ayuda a evitar fallas y cuida nuestras unidades.</p>
+        </div>
+    </section>
+
+    <script>
+        // Mostrar/Ocultar recuadro de estado de unidad y estado de entrega
+        document.getElementById('tipoMantenimiento').addEventListener('change', function() {
+            const estadoDiv = document.getElementById('estadoUnidadDiv');
+            const entregaDiv = document.getElementById('estadoEntregaDiv');
+            
+            if (this.value === 'Emergente') {
+                estadoDiv.style.display = 'block';
+            } else {
+                estadoDiv.style.display = 'none';
+            }
+            
+            if (this.value === 'Correctivo' || this.value === 'Emergente') {
+                entregaDiv.style.display = 'block';
+            } else {
+                entregaDiv.style.display = 'none';
+            }
+        });
+
+        document.getElementById('apply').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const datos = Object.fromEntries(formData);
+            
+            fetch('/guardar-datos', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(datos)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('msg').textContent = '✓ Datos guardados correctamente';
+                    this.reset();
+                } else {
+                    document.getElementById('msg').textContent = '✗ Error: ' + data.message;
+                }
+            })
+            .catch(error => {
+                document.getElementById('msg').textContent = '✗ Error al enviar los datos';
+            });
+        });
+    </script>
+</body>
+</html>
